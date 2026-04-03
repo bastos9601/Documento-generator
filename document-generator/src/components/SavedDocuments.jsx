@@ -1,6 +1,7 @@
 // Componente para mostrar documentos guardados
 import { useState, useEffect } from 'react';
 import { getUserDocuments, deleteDocument } from '../services/supabase';
+import PDFModal from './PDFModal';
 import './SavedDocuments.css';
 
 function SavedDocuments({ onEdit, onRefresh }) {
@@ -9,6 +10,8 @@ function SavedDocuments({ onEdit, onRefresh }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [showPDFModal, setShowPDFModal] = useState(false);
 
   // Cargar documentos al montar el componente
   useEffect(() => {
@@ -90,6 +93,18 @@ function SavedDocuments({ onEdit, onRefresh }) {
     setSearchTerm('');
   };
 
+  // Abrir modal para ver PDF
+  const handleViewPDF = (doc) => {
+    setSelectedDocument(doc);
+    setShowPDFModal(true);
+  };
+
+  // Cerrar modal de PDF
+  const handleClosePDFModal = () => {
+    setShowPDFModal(false);
+    setSelectedDocument(null);
+  };
+
   if (loading) {
     return <div className="saved-documents loading">Cargando documentos...</div>;
   }
@@ -146,6 +161,13 @@ function SavedDocuments({ onEdit, onRefresh }) {
               </div>
               <div className="document-actions">
                 <button 
+                  onClick={() => handleViewPDF(doc)}
+                  className="btn-pdf"
+                  title="Ver PDF"
+                >
+                  📄
+                </button>
+                <button 
                   onClick={() => onEdit(doc)}
                   className="btn-edit"
                   title="Editar"
@@ -164,6 +186,13 @@ function SavedDocuments({ onEdit, onRefresh }) {
           ))}
         </div>
       )}
+
+      {/* Modal para ver PDF */}
+      <PDFModal
+        document={selectedDocument}
+        isOpen={showPDFModal}
+        onClose={handleClosePDFModal}
+      />
     </div>
   );
 }
