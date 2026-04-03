@@ -13,6 +13,18 @@
   animation: fadeIn 0.3s ease;
 }
 
+.pdf-error {
+  background: #fee;
+  border: 2px solid #f99;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  color: #c00;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 20px 0;
+}
+
 .pdf-modal {
   background: white;
   border-radius: 12px;
@@ -273,5 +285,299 @@
   .btn-cancel {
     width: 100%;
     justify-content: center;
+  }
+}
+
+
+/* Estilos para documentos simples (no CV) */
+.a4-page {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  padding: 20mm;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+}
+
+.document-content {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  color: #000;
+}
+
+/* Estilos específicos para CV (copiados de CVPreview.css) */
+.cv-page {
+  font-family: 'Calibri', 'Arial', sans-serif;
+  padding: 20mm;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+}
+
+.cv-content {
+  padding: 0;
+  text-align: left;
+}
+
+.cv-name {
+  text-align: center;
+  font-size: 18pt;
+  font-weight: bold;
+  color: #000;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cv-email {
+  text-align: center;
+  color: #0066cc;
+  font-size: 11pt;
+  margin: 5px 0;
+  text-decoration: underline;
+}
+
+.cv-address {
+  text-align: center;
+  color: #333;
+  font-size: 10pt;
+  margin: 3px 0;
+}
+
+.cv-phone {
+  text-align: center;
+  font-size: 11pt;
+  font-weight: bold;
+  color: #000;
+  margin: 8px 0 15px 0;
+}
+
+.cv-separator {
+  border: none;
+  border-top: 2px solid #0066cc;
+  margin: 15px 0;
+}
+
+.cv-section-title {
+  font-size: 12pt;
+  font-weight: bold;
+  color: #000;
+  margin: 18px 0 12px 0;
+  padding-bottom: 3px;
+  border-bottom: 2px solid #000;
+  text-decoration: underline;
+}
+
+.section-number {
+  font-weight: bold;
+}
+
+.cv-subsection {
+  font-size: 10.5pt;
+  color: #000;
+  margin: 12px 0 5px 0;
+  line-height: 1.4;
+}
+
+.cv-subsection strong {
+  font-weight: bold;
+  color: #000;
+}
+
+.cv-text {
+  font-size: 10pt;
+  color: #333;
+  margin: 6px 0;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.cv-indent {
+  margin-left: 40px;
+  color: #555;
+  font-size: 9.5pt;
+}
+
+.cv-bullet {
+  font-size: 10pt;
+  color: #333;
+  margin: 4px 0;
+  margin-left: 20px;
+  padding-left: 5px;
+  line-height: 1.4;
+  list-style-type: disc;
+  list-style-position: outside;
+  text-align: left;
+}
+
+.cv-sub-bullet {
+  font-size: 9.5pt;
+  color: #555;
+  margin: 3px 0;
+  margin-left: 50px;
+  padding-left: 5px;
+  line-height: 1.3;
+  list-style-type: disc;
+  list-style-position: outside;
+  text-align: left;
+}
+
+.cv-circle-bullet {
+  font-size: 10pt;
+  color: #333;
+  margin: 4px 0;
+  margin-left: 20px;
+  padding-left: 5px;
+  line-height: 1.4;
+  list-style-type: circle;
+  list-style-position: outside;
+  text-align: left;
+}
+
+.cv-sub-circle-bullet {
+  font-size: 9.5pt;
+  color: #555;
+  margin: 3px 0;
+  margin-left: 50px;
+  padding-left: 5px;
+  line-height: 1.3;
+  list-style-type: circle;
+  list-style-position: outside;
+  text-align: left;
+}
+
+.cv-spacer {
+  height: 6px;
+}
+
+/* Scrollbar personalizado */
+.pdf-preview-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pdf-preview-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.pdf-preview-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.pdf-preview-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Ajustes adicionales para el fondo del modal */
+.pdf-preview-container {
+  background: #e0e0e0;
+}
+
+/* Responsive adicional para CV */
+@media (max-width: 768px) {
+  .cv-name {
+    font-size: 16pt;
+  }
+
+  .cv-email {
+    font-size: 10pt;
+  }
+
+  .cv-address,
+  .cv-phone {
+    font-size: 9pt;
+  }
+
+  .cv-section-title {
+    font-size: 11pt;
+  }
+
+  .cv-subsection {
+    font-size: 9.5pt;
+  }
+
+  .cv-text {
+    font-size: 9pt;
+  }
+
+  .cv-bullet,
+  .cv-circle-bullet {
+    font-size: 9pt;
+    margin-left: 15px;
+  }
+
+  .cv-sub-bullet,
+  .cv-sub-circle-bullet {
+    font-size: 8.5pt;
+    margin-left: 35px;
+  }
+
+  .cv-page,
+  .a4-page {
+    padding: 15mm;
+  }
+}
+
+@media (max-width: 480px) {
+  .cv-name {
+    font-size: 14pt;
+  }
+
+  .cv-section-title {
+    font-size: 10pt;
+  }
+
+  .cv-text,
+  .cv-bullet,
+  .cv-circle-bullet {
+    font-size: 8.5pt;
+  }
+
+  .cv-page,
+  .a4-page {
+    padding: 10mm;
+  }
+}
+
+
+/* Estilos para imágenes adjuntas en CV */
+.cv-attachments {
+  margin-top: 30px;
+}
+
+.attachment-page {
+  margin-bottom: 20px;
+  page-break-inside: avoid;
+}
+
+.attachment-image {
+  width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: block;
+}
+
+/* Ajustes para impresión/PDF */
+@media print {
+  .cv-page {
+    box-shadow: none;
+    margin: 0;
+  }
+  
+  .cv-separator {
+    border-top-color: #000;
+  }
+  
+  .cv-section-title {
+    border-bottom-color: #000;
+  }
+  
+  .attachment-page {
+    page-break-before: always;
   }
 }

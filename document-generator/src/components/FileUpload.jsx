@@ -1,10 +1,29 @@
 // Componente para subir archivos (imágenes o PDFs)
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './FileUpload.css';
 
-function FileUpload({ onFilesChange, initialFiles = [] }) {
+function FileUpload({ onFilesChange, onExistingAttachmentsChange, initialFiles = [], existingAttachments = [] }) {
   const [files, setFiles] = useState(initialFiles);
   const [previews, setPreviews] = useState([]);
+  const [currentExistingAttachments, setCurrentExistingAttachments] = useState([]);
+
+  // Cargar attachments existentes cuando se está editando
+  useEffect(() => {
+    if (existingAttachments && existingAttachments.length > 0) {
+      console.log('Cargando attachments existentes en FileUpload:', existingAttachments);
+      const existingPreviews = existingAttachments.map((url, index) => ({
+        name: `Certificado ${index + 1}`,
+        type: 'image',
+        url: url,
+        isExisting: true
+      }));
+      setPreviews(existingPreviews);
+      setCurrentExistingAttachments(existingAttachments);
+    } else {
+      setPreviews([]);
+      setCurrentExistingAttachments([]);
+    }
+  }, [existingAttachments]);
 
   // Manejar selección de archivos
   const handleFileSelect = (e) => {
@@ -23,26 +42,32 @@ function FileUpload({ onFilesChange, initialFiles = [] }) {
 
     // Crear previews para las imágenes
     const newPreviews = [];
-    validFiles.forEach(file => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          newPreviews.push({
+    const previewPromises = validFiles.map(file => {
+      return new Promise((resolve) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve({
+              name: file.name,
+              type: 'image',
+              url: e.target.result,
+              isExisting: false
+            });
+          };
+          reader.readAsDataURL(file);
+        } else {
+          resolve({
             name: file.name,
-            type: 'image',
-            url: e.target.result
+            type: 'pdf',
+            url: null,
+            isExisting: false
           });
-          setPreviews([...previews, ...newPreviews]);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        newPreviews.push({
-          name: file.name,
-          type: 'pdf',
-          url: null
-        });
-        setPreviews([...previews, ...newPreviews]);
-      }
+        }
+      });
+    });
+
+    Promise.all(previewPromises).then(results => {
+      setPreviews([...previews, ...results]);
     });
 
     const updatedFiles = [...files, ...validFiles];
@@ -52,11 +77,33 @@ function FileUpload({ onFilesChange, initialFiles = [] }) {
 
   // Eliminar archivo
   const handleRemoveFile = (index) => {
-    const updatedFiles = files.filter((_, i) => i !== index);
-    const updatedPreviews = previews.filter((_, i) => i !== index);
-    setFiles(updatedFiles);
-    setPreviews(updatedPreviews);
-    onFilesChange(updatedFiles);
+    const preview = previews[index];
+    
+    // Si es un archivo existente (URL), lo quitamos de la vista y notificamos al padre
+    if (preview.isExisting) {
+      const updatedPreviews = previews.filter((_, i) => i !== index);
+      setPreviews(updatedPreviews);
+      
+      // Actualizar la lista de attachments existentes
+      const updatedExistingAttachments = currentExistingAttachments.filter(url => url !== preview.url);
+      setCurrentExistingAttachments(updatedExistingAttachments);
+      
+      // Notificar al componente padre sobre el cambio
+      if (onExistingAttachmentsChange) {
+        onExistingAttachmentsChange(updatedExistingAttachments);
+      }
+    } else {
+      // Si es un archivo nuevo, lo quitamos de files y previews
+      // Necesitamos calcular el índice correcto en el array de files
+      const existingCount = previews.slice(0, index).filter(p => p.isExisting).length;
+      const fileIndex = index - existingCount;
+      
+      const updatedFiles = files.filter((_, i) => i !== fileIndex);
+      const updatedPreviews = previews.filter((_, i) => i !== index);
+      setFiles(updatedFiles);
+      setPreviews(updatedPreviews);
+      onFilesChange(updatedFiles);
+    }
   };
 
   return (
@@ -99,6 +146,9 @@ function FileUpload({ onFilesChange, initialFiles = [] }) {
                 >
                   ✕
                 </button>
+                {preview.isExisting && (
+                  <span className="existing-badge">Guardado</span>
+                )}
               </div>
             ))}
           </div>

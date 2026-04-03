@@ -124,3 +124,18 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+/* Badge para archivos existentes */
+.existing-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: #10b981;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 1;
+}

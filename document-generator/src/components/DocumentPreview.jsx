@@ -37,8 +37,11 @@ function DocumentPreview({ content, documentType }) {
 
       {/* Hoja A4 con el contenido del documento */}
       <div className="preview-wrapper">
-        <div className={`a4-page ${isCV ? 'cv-style' : ''}`} ref={previewRef}>
-          <pre className="document-content">{content}</pre>
+        <div className="page-container">
+          <div className="page-number">Página 1</div>
+          <div className={`a4-page ${isCV ? 'cv-style' : ''}`} ref={previewRef}>
+            <pre className="document-content">{content}</pre>
+          </div>
         </div>
       </div>
     </div>

@@ -166,6 +166,7 @@
 }
 
 .btn-pdf,
+.btn-download,
 .btn-edit,
 .btn-delete {
   padding: 8px 12px;
@@ -177,11 +178,20 @@
 }
 
 .btn-pdf {
-  background: #28a745;
+  background: #3b82f6;
 }
 
 .btn-pdf:hover {
-  background: #218838;
+  background: #2563eb;
+  transform: scale(1.1);
+}
+
+.btn-download {
+  background: #10b981;
+}
+
+.btn-download:hover {
+  background: #059669;
   transform: scale(1.1);
 }
 

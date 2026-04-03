@@ -134,26 +134,33 @@ function CVPreview({ content, documentType, attachments = [], formData = {} }) {
       </div>
 
       <div className="preview-wrapper">
-        <div className="a4-page cv-page" ref={previewRef}>
-          <div className="cv-content">
-            {parseCV(content)}
+        {/* Página principal del CV */}
+        <div className="page-container">
+          <div className="page-number">Página 1</div>
+          <div className="a4-page cv-page" ref={previewRef}>
+            <div className="cv-content">
+              {parseCV(content)}
+            </div>
           </div>
-          
-          {/* Mostrar certificados adjuntos */}
-          {attachments && attachments.length > 0 && (
-            <div className="cv-attachments">
-              {attachments.map((attachment, index) => (
-                <div key={index} className="attachment-page">
+        </div>
+        
+        {/* Páginas de certificados adjuntos */}
+        {attachments && attachments.length > 0 && attachments.map((attachment, index) => (
+          <div key={index} className="page-container">
+            <div className="page-number">Página {index + 2}</div>
+            <div className="a4-page cv-page">
+              <div className="cv-attachments">
+                <div className="attachment-page">
                   <img 
                     src={attachment} 
                     alt={`Certificado ${index + 1}`}
                     className="attachment-image"
                   />
                 </div>
-              ))}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

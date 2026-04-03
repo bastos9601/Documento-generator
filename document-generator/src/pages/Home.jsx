@@ -36,6 +36,7 @@ function Home({ onLogout }) {
     setFormData({});
     setEditingDocument(null);
     setAttachments([]);
+    setAttachmentFiles([]);
   };
 
   // Manejar cambios en el formulario
@@ -58,8 +59,31 @@ function Home({ onLogout }) {
     });
 
     Promise.all(filePromises).then(results => {
-      setAttachments(results);
+      // Si estamos editando, combinar con los attachments existentes
+      if (editingDocument && editingDocument.attachments) {
+        setAttachments([...editingDocument.attachments, ...results]);
+      } else {
+        setAttachments(results);
+      }
     });
+  };
+
+  // Manejar cambios en attachments existentes (cuando se eliminan)
+  const handleExistingAttachmentsChange = (updatedExistingAttachments) => {
+    console.log('Attachments existentes actualizados:', updatedExistingAttachments);
+    
+    // Actualizar el estado de attachments
+    // Mantener solo los attachments existentes actualizados y los nuevos (base64)
+    const newAttachments = attachments.filter(att => att.startsWith('data:'));
+    setAttachments([...updatedExistingAttachments, ...newAttachments]);
+    
+    // Si estamos editando, actualizar también el documento en edición
+    if (editingDocument) {
+      setEditingDocument({
+        ...editingDocument,
+        attachments: updatedExistingAttachments
+      });
+    }
   };
 
   // Guardar documento en Supabase
@@ -67,6 +91,13 @@ function Home({ onLogout }) {
     try {
       // Subir archivos adjuntos si existen
       let attachmentUrls = [];
+      
+      // Si estamos editando, mantener los attachments existentes
+      if (editingDocument && editingDocument.attachments) {
+        attachmentUrls = [...editingDocument.attachments];
+        console.log('Attachments existentes al guardar:', attachmentUrls);
+      }
+      
       if (attachmentFiles.length > 0) {
         const user = await getCurrentUser();
         if (!user) {
@@ -74,7 +105,7 @@ function Home({ onLogout }) {
           return;
         }
 
-        // Subir cada archivo
+        // Subir cada archivo nuevo
         try {
           const uploadPromises = attachmentFiles.map(file => uploadAttachment(file, user.id));
           const uploadResults = await Promise.all(uploadPromises);
@@ -83,18 +114,20 @@ function Home({ onLogout }) {
           const hasErrors = uploadResults.some(result => result.error);
           if (hasErrors) {
             console.error('Errores al subir archivos:', uploadResults);
-            alert('Error al subir algunos archivos adjuntos. El documento se guardará sin adjuntos.');
-            attachmentUrls = []; // Guardar sin adjuntos
+            alert('Error al subir algunos archivos adjuntos. El documento se guardará con los adjuntos existentes.');
           } else {
-            // Obtener URLs de los archivos subidos
-            attachmentUrls = uploadResults.map(result => result.data.url);
+            // Obtener URLs de los archivos subidos y agregarlos a los existentes
+            const newUrls = uploadResults.map(result => result.data.url);
+            attachmentUrls = [...attachmentUrls, ...newUrls];
+            console.log('Attachments finales (existentes + nuevos):', attachmentUrls);
           }
         } catch (uploadError) {
           console.error('Error al subir archivos:', uploadError);
-          alert('Error al subir archivos adjuntos. El documento se guardará sin adjuntos.');
-          attachmentUrls = [];
+          alert('Error al subir archivos adjuntos. El documento se guardará con los adjuntos existentes.');
         }
       }
+
+      console.log('Guardando documento con attachments:', attachmentUrls);
 
       if (editingDocument) {
         // Actualizar documento existente
@@ -144,6 +177,18 @@ function Home({ onLogout }) {
       setFormData(doc.campos);
       setEditingDocument(doc);
       setShowSaved(false);
+      
+      // Cargar attachments si existen
+      if (doc.attachments && doc.attachments.length > 0) {
+        console.log('Cargando attachments para edición:', doc.attachments);
+        setAttachments(doc.attachments);
+        // Limpiar attachmentFiles ya que son URLs, no archivos nuevos
+        setAttachmentFiles([]);
+      } else {
+        setAttachments([]);
+        setAttachmentFiles([]);
+      }
+      
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -159,6 +204,8 @@ function Home({ onLogout }) {
     setEditingDocument(null);
     setFormData({});
     setSelectedPlantilla(plantillas[0]);
+    setAttachments([]);
+    setAttachmentFiles([]);
   };
 
   // Determinar si es un CV
@@ -218,7 +265,11 @@ function Home({ onLogout }) {
                 
                 {/* Componente para adjuntar archivos (solo para CV) */}
                 {isCV && (
-                  <FileUpload onFilesChange={handleFilesChange} />
+                  <FileUpload 
+                    onFilesChange={handleFilesChange}
+                    onExistingAttachmentsChange={handleExistingAttachmentsChange}
+                    existingAttachments={attachments}
+                  />
                 )}
                 
                 {/* Botón guardar */}

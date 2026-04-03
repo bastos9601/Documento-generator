@@ -1,6 +1,7 @@
 // Componente para mostrar documentos guardados
 import { useState, useEffect } from 'react';
 import { getUserDocuments, deleteDocument } from '../services/supabase';
+import html2pdf from 'html2pdf.js';
 import PDFModal from './PDFModal';
 import './SavedDocuments.css';
 
@@ -95,6 +96,10 @@ function SavedDocuments({ onEdit, onRefresh }) {
 
   // Abrir modal para ver PDF
   const handleViewPDF = (doc) => {
+    console.log('Documento seleccionado para PDF:', doc);
+    console.log('Tipo de documento:', doc?.tipo);
+    console.log('Contenido del documento:', doc?.contenido?.substring(0, 100));
+    console.log('Attachments:', doc?.attachments);
     setSelectedDocument(doc);
     setShowPDFModal(true);
   };
@@ -163,9 +168,9 @@ function SavedDocuments({ onEdit, onRefresh }) {
                 <button 
                   onClick={() => handleViewPDF(doc)}
                   className="btn-pdf"
-                  title="Ver PDF"
+                  title="Ver PDF en modal"
                 >
-                  📄
+                  👁️
                 </button>
                 <button 
                   onClick={() => onEdit(doc)}

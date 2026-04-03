@@ -11,6 +11,7 @@ Aplicación web para generar documentos automáticamente usando plantillas diná
 - ✅ Vista previa en tiempo real
 - ✅ Exportación a PDF
 - ✅ Editar documentos guardados
+- ✅ **Ver y descargar PDFs de documentos guardados**
 - ✅ Interfaz responsive (móvil y desktop)
 
 ## 🛠️ Tecnologías
@@ -189,6 +190,24 @@ html2pdf()
   .from(element)
   .save();
 ```
+
+### Gestión de PDFs en documentos guardados
+
+La aplicación ahora incluye funcionalidad para ver y descargar PDFs de documentos guardados:
+
+1. **Ver PDF en modal**: Haz clic en el botón 👁️ para abrir un modal con vista previa del PDF
+2. **Descargar PDF directamente**: Haz clic en el botón ⬇️ para descargar el PDF inmediatamente
+3. **Modal interactivo**: El modal permite ver el PDF, descargarlo o abrirlo en nueva pestaña
+
+Cada documento guardado muestra dos botones adicionales:
+- 👁️ **Ver PDF**: Abre un modal con vista previa del documento
+- ⬇️ **Descargar PDF**: Descarga el PDF directamente sin abrir el modal
+
+El modal de PDF incluye:
+- Vista previa completa del documento
+- Opción para ver el PDF en nueva pestaña
+- Opción para descargar el PDF
+- Formato profesional con encabezado, contenido y pie de página
 
 ## 🎨 Personalización
 
